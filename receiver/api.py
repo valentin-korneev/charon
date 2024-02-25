@@ -36,6 +36,7 @@ def send_message(request):
         return json_response('Invalid token')
 
     message = MainMessage.objects.create(group=token.group, content=message)
+    sended = insecure = 0
     for gate in token.group.gate_set.all():
         gate_message = Message.objects.create(message=message, gate=gate, content=message.content)
         rules = Rule.objects.filter((Q(gate__isnull=True) | Q(gate=gate)) & Q(is_active=True))
@@ -53,8 +54,13 @@ def send_message(request):
         gate_message.save()
 
         if gate_message.is_blocked:
-            return json_response('Insecure message')
+            insecure += 1
+            continue
 
         gate_message.gate.chat.send_message(gate_message.content)
+        sended += 1
+
+    if insecure > 0:
+        return json_response(f'Insecure message{" for some Chat" if sended > 0 else ""}')
 
     return json_response()
