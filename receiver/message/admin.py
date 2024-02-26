@@ -9,9 +9,6 @@ class MessageAdmin(admin.ModelAdmin):
     list_filter = ['group__application', 'group']
     search_fields = ['content']
 
-    def get_actions(self, request):
-        return {}
-
     def has_add_permission(self, request):
         return False
 

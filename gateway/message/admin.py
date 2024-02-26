@@ -8,10 +8,7 @@ from gateway.message.model import Message
 class MessageAdmin(admin.ModelAdmin):
     list_display = ['id', 'get_message', 'get_gate', 'content', 'is_blocked']
     list_filter = ['gate__group', 'gate__chat', 'is_blocked']
-    search_fields = ['content']
-
-    def get_actions(self, request):
-        return {}
+    search_fields = ['content', 'message__content']
 
     def has_add_permission(self, request):
         return False

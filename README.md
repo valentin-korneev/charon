@@ -10,6 +10,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
+python manage.py crontab add
 python manage.py runserver
 ```
 
