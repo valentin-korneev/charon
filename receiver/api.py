@@ -40,33 +40,30 @@ def send_message(request):
     for gate in token.group.gate_set.all():
         gate_message = Message.objects.create(message=message, gate=gate, content=message.content)
         rules = Rule.objects.filter((Q(gate__isnull=True) | Q(gate=gate)) & Q(is_active=True))
-        block_rule = None
 
         # block rules
         for rule in rules:
             if rule.type == Rule.RULE_TYPE_CONTAIN and rule.pattern in gate_message.content:
                 gate_message.is_blocked = True
-                block_rule = rule
                 break
             if rule.type == Rule.RULE_TYPE_REGEX and re.search(rule.pattern, gate_message.content):
                 gate_message.is_blocked = True
-                block_rule = rule
                 break
 
         if gate_message.is_blocked:
             insecure += 1
-            gate_message.gate.chat.send_message(f'This message is blocked by rule {block_rule}')
-            continue
+            text = f'This message has been blocked'
+        else:
+            # mask rules
+            for rule in rules:
+                if rule.type == Rule.RULE_TYPE_MASK:
+                    gate_message.content = re.sub(rule.pattern, '***', gate_message.content)
 
-        # mask rules
-        for rule in rules:
-            if rule.type == Rule.RULE_TYPE_MASK:
-                gate_message.content = re.sub(rule.pattern, '***', gate_message.content)
+            sended += 1
+            text = gate_message.content
 
         gate_message.save()
-
-        gate_message.gate.chat.send_message(gate_message.content)
-        sended += 1
+        gate_message.gate.chat.send_message(text)
 
     if insecure > 0:
         return json_response(f'Insecure message{" for some Chat" if sended > 0 else ""}')
