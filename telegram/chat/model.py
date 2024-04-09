@@ -4,20 +4,14 @@ from telegram.user.member.model import Member
 
 
 class Chat(models.Model):
-    CHAT_TYPE_PRIVATE = 'private'
-    CHAT_TYPE_GROUP = 'group'
-    CHAT_TYPE_SUPERGROUP = 'supergroup'
-    CHAT_TYPE_CHANNEL = 'channel'
 
-    CHAT_TYPES = (
-        (CHAT_TYPE_PRIVATE, 'Private'),
-        (CHAT_TYPE_GROUP, 'Group'),
-        (CHAT_TYPE_SUPERGROUP, 'Super Group'),
-        (CHAT_TYPE_CHANNEL, 'Channel'),
-    )
+    class Type(models.TextChoices):
+        PRIVATE = 'private', 'Private'
+        GROUP = 'group', 'Group'
+        SUPERGROUP = 'supergroup', 'Super Group'
+        CHANNEL = 'channel', 'Channel'
 
-    id = models.BigIntegerField(primary_key=True, editable=False)
-    type = models.CharField(max_length=10, choices=CHAT_TYPES)
+    type = models.CharField(max_length=10, choices=Type.choices)
     title = models.CharField(null=True, blank=True, max_length=256)
     bot = models.ForeignKey(Bot, on_delete=models.CASCADE)
     members = models.ManyToManyField(Member, related_name='chats', blank=True)
@@ -46,11 +40,11 @@ class Chat(models.Model):
         if title is not None:
             full_name = title
         elif first_name is not None:
-            full_name = f'Chat with {first_name}'
+            full_name = 'Chat with {}'.format(first_name)
             if last_name is not None:
-                full_name += f' {last_name}'
+                full_name += ' ' + last_name
             if username is not None:
-                full_name += f' ({username})'
+                full_name += ' ({})'.format(username)
 
         return full_name
 

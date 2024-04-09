@@ -3,7 +3,6 @@ from receiver.group.model import Group
 
 
 class Message(models.Model):
-    id = models.BigAutoField(primary_key=True, editable=False)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)

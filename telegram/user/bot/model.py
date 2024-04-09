@@ -17,7 +17,7 @@ class Bot(User):
 
     def request(self, method, params=None):
         response = get(
-            f'https://api.telegram.org/bot{self.token}/{method}',
+            'https://api.telegram.org/bot{}/{}'.format(self.token, method),
             params=params
         )
         response_json = response.json()
@@ -25,13 +25,13 @@ class Bot(User):
         if response_json.get('ok', False):
             return response_json.get('result')
         else:
-            raise Exception(f'Telegram: {response_json.get("error_code")} - {response_json.get("description")}')
+            raise Exception('Telegram: {} - {}'.format(response_json.get("error_code"), response_json.get("description")))
 
     def get_me_by_token(self):
         user = self.request('getMe')
 
         if not user.get('is_bot'):
-            raise Exception(f'Telegram: User {user.get("first_name")} is not Bot')
+            raise Exception('Telegram: User {} is not Bot'.format(user.get("first_name")))
 
         self.id = user.get('id')
         self.first_name = user.get('first_name')

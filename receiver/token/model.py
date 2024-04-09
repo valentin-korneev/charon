@@ -4,7 +4,6 @@ from receiver.group.model import Group
 
 
 class Token(models.Model):
-    id = models.BigAutoField(primary_key=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     token = models.CharField(max_length=256, unique=True, default=uuid.uuid4, editable=False)
     is_active = models.BooleanField(default=True)

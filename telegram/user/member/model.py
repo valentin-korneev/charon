@@ -1,4 +1,3 @@
-from django.db import models
 from telegram.user.model import User
 
 

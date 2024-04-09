@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from custom.link_to_obj import link_to_obj
 from gateway.message.model import Message
 

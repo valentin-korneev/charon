@@ -4,7 +4,7 @@ from telegram.user.member.model import Member
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'username', 'chat_count')
+    list_display = ['id', 'first_name', 'last_name', 'username', 'chat_count']
     list_filter = ['chats']
 
     def has_add_permission(self, request):

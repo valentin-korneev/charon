@@ -44,23 +44,23 @@ def send_message(request):
 
         # block rules
         for rule in rules:
-            if rule.type == Rule.RULE_TYPE_CONTAIN and rule.pattern in gate_message.content:
+            if rule.type == Rule.Type.CONTAIN and rule.pattern in gate_message.content:
                 gate_message.is_blocked = True
                 block_rule = rule
                 break
-            if rule.type == Rule.RULE_TYPE_REGEX and re.search(rule.pattern, gate_message.content):
+            if rule.type == Rule.Type.REGEX and re.search(rule.pattern, gate_message.content):
                 gate_message.is_blocked = True
                 block_rule = rule
                 break
 
         if gate_message.is_blocked:
             insecure += 1
-            gate_message.gate.chat.send_message(f'This message is blocked by rule {block_rule}')
+            gate_message.gate.chat.send_message('This message is blocked by rule {}'.format(block_rule))
             continue
 
         # mask rules
         for rule in rules:
-            if rule.type == Rule.RULE_TYPE_MASK:
+            if rule.type == Rule.Type.MASK:
                 gate_message.content = re.sub(rule.pattern, '***', gate_message.content)
 
         gate_message.save()
@@ -69,6 +69,6 @@ def send_message(request):
         sended += 1
 
     if insecure > 0:
-        return json_response(f'Insecure message{" for some Chat" if sended > 0 else ""}')
+        return json_response('Insecure message{}'.format(' for some Chat' if sended > 0 else ''))
 
     return json_response()

@@ -16,7 +16,7 @@ class GroupAdmin(admin.ModelAdmin):
 
         for group in queryset:
             token = Token.objects.create(group=group)
-            self.message_user(request, f'Token for {group}: {token.token}')
+            self.message_user(request, 'Token for {}: {}'.format(group, token.token))
 
     @admin.display(description='Application')
     def get_application(self, obj):

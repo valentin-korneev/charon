@@ -24,9 +24,9 @@ class MessageAdmin(admin.ModelAdmin):
 
     @admin.display(description='Group')
     def get_group(self, obj):
-        return link_to_obj('receiver','group', obj.group_id, obj.group)
+        return link_to_obj('receiver', 'group', obj.group_id, obj.group)
 
     @staticmethod
     @admin.display(description='Content')
     def get_content(obj):
-        return f'{obj.content[:50]}...' if len(obj.content) > 53 else obj.content
+        return '{}...'.format(obj.content[:50]) if len(obj.content) > 53 else obj.content
